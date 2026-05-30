@@ -11,8 +11,8 @@ const studentRouter   = require('./routes/student');
 const adminRouter     = require('./routes/admin');
 
 const app = express();
+const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://CodexCS:codexpassword@cluster0.4tux1ll.mongodb.net/testcraft?retryWrites=true&w=majority&appName=Cluster0';
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/testcraft';
 
 app.use(cors());
 app.use(express.json());
