@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>TestCraft — Student</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a26;--border:#2a2a3a;
+  --orange:#ff6b2b;--orange2:#ff8c42;--cyan:#00d4ff;--cyan2:#00f0e0;
+  --gold:#ffd700;--green:#00e676;--red:#ff4757;
+  --ink:#ffffff;--ink2:#a0a0b8;--ink3:#505068;
+  --r:20px;--rs:12px;
+}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--ink);max-width:430px;margin:0 auto;height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+button{cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;border:none;border-radius:var(--r);transition:all .18s cubic-bezier(.34,1.56,.64,1);letter-spacing:.3px}
+button:active:not(:disabled){transform:scale(.96)}
+button:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+input,select{font-family:'Nunito',sans-serif;font-size:15px;font-weight:600;border:2px solid var(--border);border-radius:var(--rs);padding:14px 16px;background:var(--surface2);color:var(--ink);width:100%;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none}
+input::placeholder{color:var(--ink3)}
+input:focus,select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,212,255,.15)}
+select option{background:var(--surface2)}
+label{display:block;font-size:12px;font-weight:800;color:var(--ink2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.btn-primary{width:100%;padding:18px 24px;font-size:16px;background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;border-radius:var(--r);box-shadow:0 0 20px rgba(255,107,43,.4)}
+.btn-primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 0 30px rgba(255,107,43,.6)}
+.btn-cyan{width:100%;padding:18px 24px;font-size:16px;background:linear-gradient(135deg,var(--cyan),var(--cyan2));color:#000;border-radius:var(--r);box-shadow:0 0 20px rgba(0,212,255,.4)}
+.btn-ghost{width:100%;padding:16px 24px;font-size:15px;background:transparent;color:var(--ink2);border:2px solid var(--border);border-radius:var(--r)}
+.btn-ghost:hover:not(:disabled){border-color:var(--cyan);color:var(--cyan)}
+.btn-danger{width:100%;padding:12px 16px;font-size:13px;background:transparent;color:var(--red);border:1px solid rgba(255,71,87,.3);border-radius:var(--rs)}
+.btn-danger:hover{background:rgba(255,71,87,.1);border-color:var(--red)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.screen{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px;display:flex;flex-direction:column;gap:14px}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+.logo-text{font-size:20px;font-weight:900;background:linear-gradient(135deg,var(--orange),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.opt-btn{width:100%;padding:16px 18px;border-radius:var(--rs);border:2px solid var(--border);background:var(--surface);text-align:left;font-size:15px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:14px;transition:all .2s;cursor:pointer}
+.opt-btn:hover:not(:disabled){border-color:var(--cyan);background:rgba(0,212,255,.05);box-shadow:0 0 20px rgba(0,212,255,.2)}
+.opt-btn.selected{border-color:var(--orange);background:rgba(255,107,43,.1);box-shadow:0 0 20px rgba(255,107,43,.3);color:var(--orange)}
+.opt-letter{width:32px;height:32px;border-radius:50%;background:var(--surface2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;transition:all .2s}
+.opt-btn.selected .opt-letter{background:var(--orange);border-color:var(--orange);color:#fff}
+.progress-track{height:5px;background:var(--border);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--orange),var(--cyan));transition:width .4s ease}
+.error-box{background:rgba(255,71,87,.15);border:1px solid rgba(255,71,87,.3);color:var(--red);padding:12px 16px;border-radius:var(--rs);font-size:14px;font-weight:700}
+.stat-pill{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 10px;border-radius:var(--rs);background:var(--surface2);border:1px solid var(--border);flex:1}
+.spinner{width:22px;height:22px;border:3px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;vertical-align:middle}
+.save-badge{position:fixed;bottom:20px;right:20px;background:rgba(0,230,118,.15);border:1px solid rgba(0,230,118,.3);color:var(--green);padding:8px 14px;border-radius:20px;font-size:12px;font-weight:800;pointer-events:none;opacity:0;transition:opacity .3s;z-index:999}
+.save-badge.show{opacity:1}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hidden{display:none!important}
+.fade-in{animation:fadeUp .35s ease forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- Save badge -->
+<div class="save-badge" id="save-badge">💾 Saved</div>
+
+<!-- ══════════════════ LOGIN SCREEN ══════════════════ -->
+<div id="screen-login" style="flex:1;display:flex;flex-direction:column;background:var(--bg)">
+  <div style="height:4px;background:linear-gradient(90deg,var(--orange),var(--cyan))"></div>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:32px 24px">
+    <div style="text-align:center;margin-bottom:36px">
+      <svg width="90" height="90" viewBox="0 0 100 100" fill="none" style="margin:0 auto 14px;display:block">
+        <circle cx="50" cy="50" r="50" fill="var(--surface)"/>
+        <rect x="28" y="30" width="44" height="40" rx="4" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.5"/>
+        <rect x="28" y="30" width="22" height="40" rx="4" fill="#ff6b2b" opacity=".9"/>
+        <line x1="50" y1="30" x2="50" y2="70" stroke="var(--border)" stroke-width="1.5"/>
+        <line x1="55" y1="42" x2="66" y2="42" stroke="#00d4ff" stroke-width="2" stroke-linecap="round"/>
+        <line x1="55" y1="49" x2="68" y2="49" stroke="#00d4ff" stroke-width="2" stroke-linecap="round" opacity=".6"/>
+        <line x1="55" y1="56" x2="63" y2="56" stroke="#00d4ff" stroke-width="2" stroke-linecap="round" opacity=".4"/>
+        <path d="M39 44l1.5 3 3.5.5-2.5 2.5.5 3.5L39 52l-2.5 1.5.5-3.5-2.5-2.5 3.5-.5z" fill="white"/>
+      </svg>
+      <div style="font-size:30px;font-weight:900;background:linear-gradient(135deg,var(--orange),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent">TestCraft</div>
+      <div style="color:var(--ink2);font-size:13px;font-weight:600;margin-top:4px">Student Portal</div>
+    </div>
+    <div style="background:var(--surface);border-radius:24px;padding:28px 24px;border:1px solid var(--border)">
+      <div style="font-size:20px;font-weight:800;margin-bottom:6px">Welcome</div>
+      <div style="color:var(--ink2);font-size:13px;font-weight:600;margin-bottom:22px">Sign in to start your quiz</div>
+      <div id="login-error" class="error-box hidden" style="margin-bottom:14px"></div>
+      <div style="margin-bottom:14px">
+        <label>Username</label>
+        <input id="inp-user" type="text" placeholder="Enter username" autocomplete="off"/>
+      </div>
+      <div style="margin-bottom:24px">
+        <label>Password</label>
+        <input id="inp-pass" type="password" placeholder="••••••••"/>
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Sign In</button>
+    </div>
+    <div style="text-align:center;color:var(--ink3);font-size:12px;margin-top:20px;font-weight:600">
+      TestCraft &copy; 2025 &nbsp;·&nbsp;
+      <a href="https://instagram.com/mhrbhatti" target="_blank" style="color:var(--cyan);text-decoration:none">@mhrbhatti</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ HOME SCREEN ══════════════════ -->
+<div id="screen-home" class="hidden" style="flex:1;display:flex;flex-direction:column;background:var(--bg)">
+  <div class="topbar">
+    <div>
+      <div class="logo-text">TestCraft</div>
+      <div id="home-class" style="font-size:11px;color:var(--ink2);font-weight:700;margin-top:1px"></div>
+    </div>
+    <button onclick="doLogout()" style="background:var(--surface2);color:var(--ink2);padding:8px 12px;border-radius:10px;border:1px solid var(--border);font-size:13px">Logout</button>
+  </div>
+  <div class="screen">
+    <!-- Hero -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:20px;position:relative;overflow:hidden">
+      <div style="position:absolute;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,43,.15) 0%,transparent 70%);top:-40px;right:-40px"></div>
+      <div style="position:absolute;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,.1) 0%,transparent 70%);bottom:-20px;left:-20px"></div>
+      <div style="position:relative">
+        <div style="font-size:13px;color:var(--ink2);font-weight:700;margin-bottom:2px">Welcome back,</div>
+        <div id="home-name" style="font-size:22px;font-weight:900;margin-bottom:16px"></div>
+        <div style="display:flex;gap:10px">
+          <div class="stat-pill"><div style="font-size:18px;font-weight:900;color:var(--orange)" id="home-score">—</div><div style="font-size:10px;color:var(--ink2);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-top:2px">Best Score</div></div>
+          <div class="stat-pill"><div style="font-size:18px;font-weight:900;color:var(--cyan)" id="home-quizzes">0</div><div style="font-size:10px;color:var(--ink2);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-top:2px">Quizzes</div></div>
+          <div class="stat-pill"><div style="font-size:18px;font-weight:900;color:var(--gold)" id="home-xp">0</div><div style="font-size:10px;color:var(--ink2);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-top:2px">XP</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quiz launcher -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:20px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><div style="font-size:12px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:1px">Start a Quiz</div><div id="quiz-class-badge" style="font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;background:rgba(0,212,255,.1);color:var(--cyan);border:1px solid rgba(0,212,255,.2)"></div></div>
+      <div id="home-error" class="error-box hidden" style="margin-bottom:14px"></div>
+      <div style="margin-bottom:14px">
+        <label>Subject</label>
+        <select id="sel-subject" onchange="loadChapters()"></select>
+      </div>
+      <div style="margin-bottom:14px">
+        <label>Chapter</label>
+        <select id="sel-chapter"><option value="">Select chapter...</option></select>
+      </div>
+      <div style="margin-bottom:20px">
+        <label>Number of Questions</label>
+        <div style="display:flex;gap:8px" id="count-btns"></div>
+      </div>
+      <button class="btn-primary" onclick="startQuiz()">Start Quiz</button>
+    </div>
+
+    <!-- Recent -->
+    <div id="recent-block" class="hidden" style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px 18px">
+      <div style="font-size:12px;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Recent Quizzes</div>
+      <div id="recent-list"></div>
+    </div>
+
+    <!-- Reset data -->
+    <div style="padding:4px 0 8px">
+      <button class="btn-danger" onclick="confirmResetData()">🗑 Clear My Saved Data</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ QUIZ SCREEN ══════════════════ -->
+<div id="screen-quiz" class="hidden" style="flex:1;display:flex;flex-direction:column;background:var(--bg)">
+  <div class="progress-track" style="flex-shrink:0"><div class="progress-fill" id="quiz-progress" style="width:0%"></div></div>
+  <div class="topbar">
+    <div>
+      <div id="quiz-chapter-label" style="font-size:11px;color:var(--ink2);font-weight:800;text-transform:uppercase;letter-spacing:.8px"></div>
+      <div style="font-size:15px;font-weight:900"><span id="quiz-qnum"></span> <span style="color:var(--ink2);font-weight:600">of <span id="quiz-total"></span></span></div>
+    </div>
+    <div style="position:relative;width:52px;height:52px">
+      <svg width="52" height="52" style="transform:rotate(-90deg)">
+        <circle cx="26" cy="26" r="22" fill="none" stroke="var(--surface2)" stroke-width="4"/>
+        <circle id="timer-ring" cx="26" cy="26" r="22" fill="none" stroke="var(--cyan)" stroke-width="4" stroke-linecap="round" stroke-dasharray="138.2" stroke-dashoffset="0" style="transition:stroke-dashoffset 1s linear,stroke .3s"/>
+      </svg>
+      <div id="timer-text" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:var(--cyan)">30</div>
+    </div>
+  </div>
+  <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px 18px;display:flex;flex-direction:column">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px 20px;margin-bottom:20px;border-left:4px solid var(--orange);box-shadow:0 4px 20px rgba(0,0,0,.3)">
+      <div style="font-size:11px;color:var(--orange);font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Question</div>
+      <div id="quiz-question" style="font-size:16px;font-weight:700;line-height:1.6;color:var(--ink)"></div>
+    </div>
+    <div id="quiz-options" style="display:flex;flex-direction:column;gap:10px;flex:1"></div>
+    <div style="margin-top:20px">
+      <button class="btn-primary hidden" id="btn-next" onclick="nextQuestion()">Next Question</button>
+      <button class="btn-ghost" id="btn-skip" onclick="skipQuestion()">Skip</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ RESULTS SCREEN ══════════════════ -->
+<div id="screen-results" class="hidden" style="flex:1;display:flex;flex-direction:column;background:var(--bg)">
+  <div style="height:4px;background:linear-gradient(90deg,var(--orange),var(--cyan))"></div>
+  <div class="topbar">
+    <div style="width:24px"></div>
+    <div style="font-weight:800;font-size:16px">Quiz Results</div>
+    <div style="width:24px"></div>
+  </div>
+  <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px 16px">
+    <div style="text-align:center;margin-bottom:22px">
+      <div style="position:relative;width:140px;height:140px;margin:0 auto">
+        <svg width="140" height="140" style="transform:rotate(-90deg)">
+          <circle cx="70" cy="70" r="54" fill="none" stroke="var(--surface2)" stroke-width="10"/>
+          <circle id="score-ring" cx="70" cy="70" r="54" fill="none" stroke="var(--green)" stroke-width="10" stroke-linecap="round" stroke-dasharray="339.3" stroke-dashoffset="339.3" style="transition:stroke-dashoffset 1.2s ease,stroke .3s;filter:drop-shadow(0 0 8px var(--green))"/>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <div id="res-score-pct" style="font-size:32px;font-weight:900;line-height:1;color:var(--green)"></div>
+          <div id="res-score-label" style="font-size:11px;color:var(--ink2);font-weight:800;margin-top:4px;text-transform:uppercase;letter-spacing:.5px"></div>
+        </div>
+      </div>
+      <div id="res-chapter" style="font-size:14px;color:var(--ink2);font-weight:700;margin-top:10px"></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+      <div style="background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.2);border-radius:16px;padding:14px 8px;text-align:center">
+        <div id="res-correct" style="font-size:26px;font-weight:900;color:var(--green)"></div>
+        <div style="font-size:11px;color:var(--green);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-top:3px">Correct</div>
+      </div>
+      <div style="background:rgba(255,71,87,.1);border:1px solid rgba(255,71,87,.2);border-radius:16px;padding:14px 8px;text-align:center">
+        <div id="res-wrong" style="font-size:26px;font-weight:900;color:var(--red)"></div>
+        <div style="font-size:11px;color:var(--red);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-top:3px">Wrong</div>
+      </div>
+      <div style="background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);border-radius:16px;padding:14px 8px;text-align:center">
+        <div id="res-skipped" style="font-size:26px;font-weight:900;color:var(--gold)"></div>
+        <div style="font-size:11px;color:var(--gold);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-top:3px">Skipped</div>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-size:12px;color:var(--ink2);font-weight:800;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">XP Earned</div>
+        <div id="res-xp" style="font-size:32px;font-weight:900;color:var(--orange)"></div>
+      </div>
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="var(--orange)" opacity=".3">
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+      </svg>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px 18px;margin-bottom:20px">
+      <div style="font-size:12px;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px">Answer Review</div>
+      <div id="res-review" style="display:flex;flex-direction:column;gap:10px"></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;padding-bottom:20px">
+      <button class="btn-primary" onclick="goHome()">Back to Home</button>
+      <button class="btn-ghost" onclick="goHome()">Try Another Quiz</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// USERS
+// ══════════════════════════════════════════
+const USERS = [
+  { username:'ali',     password:'ali123',   name:'Ali Hassan',    classLevel:'9'  },
+  { username:'sara',    password:'sara456',  name:'Sara Khan',     classLevel:'10' },
+  { username:'ahmed',   password:'ahmed789', name:'Ahmed Raza',    classLevel:'9'  },
+  { username:'fatima',  password:'fat2025',  name:'Fatima Malik',  classLevel:'11' },
+  { username:'usman',   password:'usm111',   name:'Usman Tariq',   classLevel:'13' },
+  { username:'student', password:'1234',     name:'Student',       classLevel:'9'  },
+];
+
+// ══════════════════════════════════════════
+// QUESTIONS
+// ══════════════════════════════════════════
+const QUESTIONS = [{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"What is defined as a collection of parts that work together to achieve a common goal?","opts":["Software","System","Network","Algorithm"],"ans":"System"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Which fundamental concept involves the reason a system exists?","opts":["Environment","Components","Objective","Communication"],"ans":"Objective"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Everything external to a system that interacts with it is called its:","opts":["Components","Environment","Objectives","Outputs"],"ans":"Environment"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"A computer is a complex system designed to process data according to:","opts":["Hardware","Instructions","Environments","Sensors"],"ans":"Instructions"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Which architecture describes a single memory store for both program instructions and data?","opts":["Harvard","Von Neumann","RISC","CISC"],"ans":"Von Neumann"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Who is the Von Neumann architecture named after?","opts":["Tim Berners-Lee","John von Neumann","Herman Goldstine","Brendan Eich"],"ans":"John von Neumann"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Which CPU component performs mathematical and logical calculations?","opts":["Control Unit","ALU","Register","System Bus"],"ans":"ALU"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"The unit that handles data transmission activities within the CPU is the:","opts":["ALU","Control Unit (CU)","Memory","Input Device"],"ans":"Control Unit (CU)"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"The first step in the Von Neumann instruction cycle is:","opts":["Decoding","Executing","Fetching","Storing"],"ans":"Fetching"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"During which stage of the instruction cycle is the command interpreted?","opts":["Fetching","Decoding","Executing","Storing"],"ans":"Decoding"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Which component maintains the information about memory locations?","opts":["Data Bus","Address Bus","Control Bus","ALU"],"ans":"Address Bus"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"A communication mechanism facilitating data movement between components is the:","opts":["CPU","System Bus","Register","Port"],"ans":"System Bus"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Which software helps a computer run and manage hardware resources?","opts":["Application","System software","Utility","Malware"],"ans":"System software"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Microsoft Word is an example of:","opts":["System software","Application software","Utility software","Device driver"],"ans":"Application software"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Disk Cleanup and antivirus tools are types of:","opts":["Operating systems","Utility software","Application software","Hardware"],"ans":"Utility software"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"How many bits are used in standard ASCII encoding?","opts":["7 bits","8 bits","16 bits","32 bits"],"ans":"7 bits"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"What does ASCII stand for?","opts":["American Standard Code for Information Interchange","Advanced Standard Code for Information Interchange","American Standard Communication for Information Interchange","Advanced Standard Communication for Information Interchange"],"ans":"American Standard Code for Information Interchange"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Which encoding scheme is used to represent characters from various languages globally?","opts":["ASCII","Unicode","Binary","Hexadecimal"],"ans":"Unicode"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"How many bytes are typically used to store an integer?","opts":["1 byte","2 bytes","4 bytes","8 bytes"],"ans":"4 bytes"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"The number system with base 10 is the:","opts":["Binary","Octal","Decimal","Hexadecimal"],"ans":"Decimal"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Binary is a base-2 system comprising of the digits:","opts":["0 to 9","0 and 1","0 to 7","0 to F"],"ans":"0 and 1"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Which number system has eight as its base?","opts":["Binary","Octal","Decimal","Hexadecimal"],"ans":"Octal"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"In hexadecimal, the letter 'A' represents which decimal value?","opts":["10","11","12","15"],"ans":"10"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"A \"byte\" consists of how many bits?","opts":["4","8","16","32"],"ans":"8"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"The stage where results are returned to memory is:","opts":["Fetching","Decoding","Executing","Storing"],"ans":"Storing"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Which device enables users to transmit text data to the CPU?","opts":["Monitor","Keyboard","Printer","Speaker"],"ans":"Keyboard"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"A monitor is an example of an:","opts":["Input device","Output device","Storage device","Processing device"],"ans":"Output device"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Which of the following is NOT a component of the system bus?","opts":["Data Bus","Address Bus","Power Bus","Control Bus"],"ans":"Power Bus"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"What is the primary function of a system?","opts":["To work independently","To achieve a common goal","To create new systems","To provide entertainment"],"ans":"To achieve a common goal"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Which step in the instruction cycle involves the ALU performing a task?","opts":["Fetching","Decoding","Executing","Storing"],"ans":"Executing"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"System software is usually installed:","opts":["By the user for tasks","To manage hardware resources","To play games","To browse the web"],"ans":"To manage hardware resources"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Device drivers are examples of:","opts":["Application software","System software","Hardware","Input devices"],"ans":"System software"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"The range of integer values is affected by the:","opts":["Base value","Number of bits","Clock speed","Bus width"],"ans":"Number of bits"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Arithmetic operations on binary numbers include:","opts":["Addition","Subtraction","Multiplication","All of the above"],"ans":"All of the above"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"The Hexadecimal system uses digits 0-9 and alphabets:","opts":["A-E","A-F","A-G","A-Z"],"ans":"A-F"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Which of the following is a simple system example?","opts":["A human body","A computer network","A thermostat regulating temperature","The Internet"],"ans":"A thermostat regulating temperature"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Processing information is a primary:","opts":["Component","System objective","Environment","Instruction"],"ans":"System objective"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Negatives in binary are often represented using:","opts":["One's complement","Two's complement","ASCII","Unicode"],"ans":"Two's complement"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"The study of how computers work and their limitations is:","opts":["ICT","Computer science","Data science","Troubleshooting"],"ans":"Computer science"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch1: Computer Systems","q":"Which architecture step involves getting instructions from memory?","opts":["Fetching","Decoding","Executing","Storing"],"ans":"Fetching"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"Which systems process information in the form of '0' and '1'?","opts":["Analog","Digital","Biological","Mechanical"],"ans":"Digital"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"A signal that varies continuously over time is:","opts":["Analog","Digital","Binary","Discrete"],"ans":"Analog"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"The process of converting continuous signals into discrete digital signals is:","opts":["DAC","ADC","CPU","ALU"],"ans":"ADC"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"Which device converts digital signals back to analog for speakers?","opts":["ADC","DAC","Router","Switch"],"ans":"DAC"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"Digital logic processes information in the form of:","opts":["Words","Binary numbers","Images","Sound waves"],"ans":"Binary numbers"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"Which Boolean operation is represented by the '+' sign?","opts":["AND","OR","NOT","XOR"],"ans":"OR"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"In an AND operation, the output is 1 only if:","opts":["One input is 1","Both inputs are 1","No inputs are 1","Both inputs are 0"],"ans":"Both inputs are 1"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"The dual of the Boolean expression A . 0 = 0 is:","opts":["A + 1 = 1","A + 0 = A","A . 1 = A","A . 0 = 0"],"ans":"A + 1 = 1"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"Which gate gives the opposite of the input as output?","opts":["AND","OR","NOT","XOR"],"ans":"NOT"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"A truth table is used in digital logic to show:","opts":["Memory locations","Output for all input combinations","Error logs","Network paths"],"ans":"Output for all input combinations"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"Boolean functions are mathematical expressions involving:","opts":["Real numbers","Binary variables","Strings","Decimals"],"ans":"Binary variables"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"A diagram representing the structure of a circuit using gates is a:","opts":["Flowchart","Logic diagram","Truth table","Network map"],"ans":"Logic diagram"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"What is the result of an OR gate if both inputs are 0?","opts":["1","0","Error","2"],"ans":"0"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"Troubleshooting is vital for maintaining:","opts":["Only hardware","Only software","Smooth operation of systems","Internet speeds"],"ans":"Smooth operation of systems"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"The first step in systematic troubleshooting is:","opts":["Establish a theory","Identify the problem","Implement a solution","Document findings"],"ans":"Identify the problem"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"If a laptop won't turn on after pressing the power button, the problem is:","opts":["Software conflict","Clear that it won't start","A virus","Overheating"],"ans":"Clear that it won't start"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"Which troubleshooting step involves thinking about what could cause the issue?","opts":["Identify problem","Establish a theory of probable cause","Verify functionality","Document"],"ans":"Establish a theory of probable cause"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"Testing a theory helps determine the:","opts":["Actual cause","User error","System price","Hardware brand"],"ans":"Actual cause"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"What should you do after identifying the cause of a problem?","opts":["Identify problem","Establish a plan of action","Verify functionality","Document"],"ans":"Establish a plan of action"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"Which step involves actually fixing the identified issue?","opts":["Identify","Test","Implement the solution","Verify"],"ans":"Implement the solution"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"Why must you verify full system functionality after a fix?","opts":["To waste time","To ensure the problem is resolved and no new ones were created","To update software","To check the price"],"ans":"To ensure the problem is resolved and no new ones were created"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"The final step in the troubleshooting process is to:","opts":["Implement solution","Verify functionality","Document findings, actions, and outcomes","Identify problem"],"ans":"Document findings, actions, and outcomes"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"MemTest86 is a tool used for diagnosing issues with:","opts":["Hard drives","RAM","Monitors","Mice"],"ans":"RAM"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"Which tool checks the health of a hard drive?","opts":["MemTest86","CrystalDiskInfo","Task Manager","Notepad"],"ans":"CrystalDiskInfo"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"The WannaCry ransomware attack in 2017 exploited a vulnerability in:","opts":["New hardware","Older Windows systems","Mac OS","Linux"],"ans":"Older Windows systems"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"Recognizing hardware failures is necessary for:","opts":["Speed","Maintaining system reliability","Software design","Web browsing"],"ans":"Maintaining system reliability"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"A software conflict occurs when:","opts":["Two programs interfere with each other","The computer is off","A mouse is unplugged","The user forgets a password"],"ans":"Two programs interfere with each other"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"How does documentation help in troubleshooting?","opts":["It makes it harder","It provides a reference for future similar problems","It fixes the hardware","It increases RAM"],"ans":"It provides a reference for future similar problems"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"Which law in Boolean algebra states A + 0 = A?","opts":["Distributive","Complement","Identity","Idempotent"],"ans":"Identity"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"De Morgan’s Theorem is used for:","opts":["Addition","Boolean simplification","Networking","Troubleshooting"],"ans":"Boolean simplification"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"In troubleshooting, \"Establish a plan of action\" is followed by:","opts":["Test theory","Implement solution","Identify problem","Document"],"ans":"Implement solution"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"ADC is necessary for which daily device?","opts":["Smartphones","Keyboard","Monitor","Printer"],"ans":"Smartphones"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"A truth table for two variables (A, B) for AND operation has how many rows?","opts":["2","4","8","16"],"ans":"4"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"Boolean operations are applied in computers for:","opts":["Control Logic","Screen resolution","Sound volume","Keyboard layout"],"ans":"Control Logic"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"The dual of A . 1 = A is:","opts":["A + 0 = A","A . 0 = 0","A + 1 = 1","A + A = A"],"ans":"A + 0 = A"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"Which step involves following clues and gathering evidence like a \"superpower\"?","opts":["Fetching","Modern troubleshooting tools","Decoding","Storing"],"ans":"Modern troubleshooting tools"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"System troubleshooting prevents potential:","opts":["Growth","Damage","Updates","Upgrades"],"ans":"Damage"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"A logic gate that outputs true if either input is true is an:","opts":["AND gate","OR gate","NOT gate","NAND gate"],"ans":"OR gate"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"The simplification of F(A, B) = A . B + A . B is:","opts":["A + B","A . B","1","0"],"ans":"A . B"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch2: Data Representation","q":"Which troubleshooting step involves recognizing that something isn't working as it should?","opts":["Identify Problem","Test Theory","Verify","Document"],"ans":"Identify Problem"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"A computer network is a system of linked devices that may:","opts":["Break easily","Exchange data and operate together","Work independently","Store electricity"],"ans":"Exchange data and operate together"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"Devices connected to a network, such as smartphones, are called:","opts":["Links","Nodes","Switches","Routers"],"ans":"Nodes"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"The connections between nodes (wired or wireless) are called:","opts":["Nodes","Links","Hubs","Protocols"],"ans":"Links"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"Which device connects multiple nodes within a network to forward data?","opts":["Router","Switch","Modem","Firewall"],"ans":"Switch"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"A device that connects different networks and directs data packets is a:","opts":["Switch","Router","Node","Link"],"ans":"Router"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"The largest network, connecting networks worldwide, is the:","opts":["LAN","MAN","Internet","Intranet"],"ans":"Internet"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"Who invented the World Wide Web in 1989?","opts":["John von Neumann","Tim Berners-Lee","Brendan Eich","Sabeer Bhatia"],"ans":"Tim Berners-Lee"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"Data communication involves exchange between a:","opts":["CPU and RAM","Sender and Receiver","Keyboard and Mouse","User and Screen"],"ans":"Sender and Receiver"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"A set of rules governing data communication is a:","opts":["Link","Protocol","Topology","Message"],"ans":"Protocol"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"The path through which a message travels is the:","opts":["Sender","Receiver","Medium","Packet"],"ans":"Medium"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"When data on the internet is divided into small segments, they are called:","opts":["Frames","Packets","Bytes","Bits"],"ans":"Packets"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"Which network covers a limited area like a home or school?","opts":["LAN","MAN","WAN","PAN"],"ans":"LAN"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"A network used for personal devices like Bluetooth headsets is a:","opts":["LAN","PAN","WAN","MAN"],"ans":"PAN"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"A network spanning a whole city is a:","opts":["LAN","MAN","WAN","CAN"],"ans":"MAN"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"The Internet is the largest example of a:","opts":["LAN","MAN","WAN","PAN"],"ans":"WAN"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"The arrangement of devices in a network is called its:","opts":["Protocol","Topology","Mode","Medium"],"ans":"Topology"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"Which topology uses a single central communication line?","opts":["Star","Ring","Bus","Mesh"],"ans":"Bus"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"In a Star topology, all devices are connected to a:","opts":["Single cable","Central hub or switch","Ring","Random node"],"ans":"Central hub or switch"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"Which topology is highly reliable because data can be rerouted if a link fails?","opts":["Bus","Ring","Mesh","Star"],"ans":"Mesh"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"Communication where data flows in only one direction is:","opts":["Simplex","Half-Duplex","Full-Duplex","Multicast"],"ans":"Simplex"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"In which mode can data flow both ways but not simultaneously?","opts":["Simplex","Half-Duplex","Full-Duplex","Unicast"],"ans":"Half-Duplex"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"Simultaneous two-way data transmission occurs in:","opts":["Simplex","Half-Duplex","Full-Duplex","Dual-Simplex"],"ans":"Full-Duplex"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"The 7-layer framework for understanding network protocols is the:","opts":["TCP/IP Model","OSI Model","DNS","DHCP"],"ans":"OSI Model"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"Which OSI layer is responsible for error detection and node-to-node transfer?","opts":["Physical","Data Link","Network","Transport"],"ans":"Data Link"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"Which protocol is used for reliable data transfer in TCP/IP?","opts":["HTTP","TCP","UDP","FTP"],"ans":"TCP"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"Which system translates domain names (like google.com) to IP addresses?","opts":["DHCP","DNS","OSI","TCP"],"ans":"DNS"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"Which protocol assigns IP addresses dynamically?","opts":["DNS","DHCP","TCP","UDP"],"ans":"DHCP"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"A private network inside a company using web technology is an:","opts":["Internet","Intranet","Ethernet","Extranet"],"ans":"Intranet"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"Which method uses a dedicated communication path?","opts":["Packet Switching","Circuit Switching","Routing","Buffering"],"ans":"Circuit Switching"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"Firewalls are used in network security to:","opts":["Encrypt data","Monitor and control traffic","Speed up the internet","Cool down the hardware"],"ans":"Monitor and control traffic"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"Protecting data by converting it into a secure format is:","opts":["Fireballing","Encryption","Antivirus","Routing"],"ans":"Encryption"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"A primary objective of computer networks is:","opts":["Saving power","Resource sharing","Deleting data","Making noise"],"ans":"Resource sharing"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"LMS platforms like Blackboard are used in which domain?","opts":["Healthcare","Education","Business","Transportation"],"ans":"Education"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"Electronic Health Records (EHR) are applications of networks in:","opts":["Schools","Healthcare","Banking","Sports"],"ans":"Healthcare"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"The Network Layer of the OSI model primarily handles:","opts":["Physical cables","Routing data between networks","Displaying images","Reading text"],"ans":"Routing data between networks"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"An Access Point (AP) connects:","opts":["Two routers","Wireless devices to a wired network","Hard drives to CPUs","Senders to messages"],"ans":"Wireless devices to a wired network"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"Which protocol is faster but less reliable than TCP?","opts":["HTTP","UDP","DNS","DHCP"],"ans":"UDP"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"A network connecting university departments is a:","opts":["PAN","LAN","CAN (Campus Area Network)","WAN"],"ans":"CAN (Campus Area Network)"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"In a Ring topology, data travels:","opts":["In all directions","In one direction around the path","To a central hub","Along a single bus"],"ans":"In one direction around the path"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch3: Networks and Communication","q":"Wait time for a packet is influenced by the network's:","opts":["Color","Topology and performance","Price","Brand"],"ans":"Topology and performance"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Computational Thinking (CT) is a problem-solving process that can be:","opts":["Used only by scientists","Executed by a computer","Ignored in daily life","Used only for math"],"ans":"Executed by a computer"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Breaking a complex problem into smaller parts is called:","opts":["Abstraction","Decomposition","Pattern recognition","Algorithms"],"ans":"Decomposition"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Finding similarities within problems is:","opts":["Decomposition","Pattern recognition","Abstraction","Debugging"],"ans":"Pattern recognition"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Ignoring unnecessary details to focus on the main idea is:","opts":["Decomposition","Abstraction","Pattern recognition","Algorithms"],"ans":"Abstraction"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"A step-by-step set of instructions to solve a problem is an:","opts":["Abstraction","Algorithm","Environment","Objective"],"ans":"Algorithm"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"What is the first and most important step in problem-solving?","opts":["Writing code","Understanding the problem","Drawing a flowchart","Testing"],"ans":"Understanding the problem"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Visual representations of steps in a process are:","opts":["Pseudocodes","Flowcharts","Logic gates","Truth tables"],"ans":"Flowcharts"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"The Oval symbol in a flowchart represents:","opts":["Process","Start/End (Terminal)","Decision","Input/Output"],"ans":"Start/End (Terminal)"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"A Rectangle in a flowchart represents a:","opts":["Decision","Process/Task","Terminal","Input"],"ans":"Process/Task"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Which flowchart symbol is a Diamond?","opts":["Process","Decision","Input","Output"],"ans":"Decision"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"A Parallelogram in a flowchart represents:","opts":["Processing","Input/Output","Start","Decision"],"ans":"Input/Output"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"What show the direction of flow in a flowchart?","opts":["Diamonds","Arrows (Flowlines)","Circles","Rectangles"],"ans":"Arrows (Flowlines)"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Representing an algorithm using plain English mixed with programming structure is:","opts":["Flowcharting","Pseudocode","Binary coding","Debugging"],"ans":"Pseudocode"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Testing a flowchart with sample data manually is called:","opts":["Coding","Dry running","Fetching","Routing"],"ans":"Dry running"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"What measures how fast or slow an algorithm performs?","opts":["Space Complexity","Time Complexity","Bit depth","Bus width"],"ans":"Time Complexity"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Space Complexity measures the amount of:","opts":["Time taken","Memory used","Pixels displayed","Data received"],"ans":"Memory used"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"The term \"debugging\" comes from an actual:","opts":["Mouse","Bug (Moth)","Virus","Worm"],"ans":"Bug (Moth)"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Identifying and fixing errors in algorithms is:","opts":["Decomposition","Debugging","Abstraction","Fetching"],"ans":"Debugging"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Which component of CT helps focus on the high-level overview?","opts":["Decomposition","Abstraction","Pattern recognition","Flowchart"],"ans":"Abstraction"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Simplifying a problem involves breaking it into:","opts":["Larger ones","Manageable sub-problems","Binary digits","Random parts"],"ans":"Manageable sub-problems"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Algorithms are used when:","opts":["Following directions","Playing a board game","Programming","All of the above"],"ans":"All of the above"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Who popularized flowcharts in the early days of computing?","opts":["Tim Berners-Lee","John von Neumann","Brendan Eich","Jack Smith"],"ans":"John von Neumann"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"LARP stands for Logic of Algorithms for:","opts":["Real Problems","Resolution of Problems","Rational Programs","Robotic Processing"],"ans":"Resolution of Problems"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Which error type occurs when code violates language rules?","opts":["Syntax error","Logical error","Runtime error","Memory error"],"ans":"Syntax error"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Computational thinking is beneficial for:","opts":["Computer scientists","Mathematicians","Daily life","All of the above"],"ans":"All of the above"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Creating step-by-step procedures is part of:","opts":["Abstraction","Algorithm design","Decomposition","Pattern recognition"],"ans":"Algorithm design"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"What involves defining requirements and setting objectives?","opts":["Problem Understanding","Coding","Debugging","Storing"],"ans":"Problem Understanding"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Choosing the best solution involves selecting the most:","opts":["Expensive","Efficient","Complex","Modern"],"ans":"Efficient"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Pattern recognition involves looking for:","opts":["Differences","Similarities","Errors","Bugs"],"ans":"Similarities"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Computational thinking helps solve:","opts":["Simple tasks only","Complex problems","Hardware failures only","ASCII codes"],"ans":"Complex problems"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Complexity increases when:","opts":["Details are hidden","Details are added","Problems are decomposed","Patterns are found"],"ans":"Details are added"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"A \"Dry Run\" is used to manually verify:","opts":["Hardware speed","Algorithm correctness","Internet connection","RAM size"],"ans":"Algorithm correctness"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Problem simplification is a:","opts":["CT Principle","Hardware component","Software type","Bus type"],"ans":"CT Principle"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Complexity analysis includes both time and:","opts":["Color","Space","Distance","Mass"],"ans":"Space"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"The \"Start\" of a flowchart is often labeled in an:","opts":["Diamond","Oval","Rectangle","Arrow"],"ans":"Oval"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Which of the following is NOT a CT component?","opts":["Decomposition","Internet access","Abstraction","Algorithms"],"ans":"Internet access"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Following rules in a game is a real-world use of:","opts":["Algorithms","Hardware","RAM","Switches"],"ans":"Algorithms"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Which tool is used for practicing algorithm design?","opts":["Excel","LARP","Word","Power BI"],"ans":"LARP"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"Computational thinking uses methods that align with:","opts":["Biology","Computer Science","Art","Geography"],"ans":"Computer Science"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch4: Algorithms and Programming","q":"The first step in CT is usually:","opts":["Coding","Decomposition","Storing","Fetching"],"ans":"Decomposition"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"The process of creating websites and applications is:","opts":["Networking","Web Development","Data Science","Troubleshooting"],"ans":"Web Development"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"HTML stands for:","opts":["Hyper Transfer Markup Language","HyperText Markup Language","High Tech Modern Language","Hyperlink Text Management Logic"],"ans":"HyperText Markup Language"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Which component focuses on what users see and interact with?","opts":["Front-end Development","Back-end Development","Full-stack","Hardware"],"ans":"Front-end Development"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Which technology structures the content on a web page?","opts":["CSS","JavaScript","HTML","Python"],"ans":"HTML"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Which technology is used to style web page content (colors, fonts)?","opts":["HTML","CSS","JavaScript","SQL"],"ans":"CSS"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Adding interactivity like pop-up messages and games is done by:","opts":["HTML","CSS","JavaScript","PHP"],"ans":"JavaScript"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Back-end development manages servers, databases, and:","opts":["Colors","Application logic","Font sizes","Images"],"ans":"Application logic"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Full-stack developers can manage:","opts":["Only Front-end","Only Back-end","All aspects of a web application","Only hardware"],"ans":"All aspects of a web application"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Hotmail was created by students at:","opts":["MIT","Stanford University","Harvard","Oxford"],"ans":"Stanford University"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"The basic building blocks of a website are:","opts":["LEGOs","HTML tags","Binary bits","Nodes"],"ans":"HTML tags"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Where do you write HTML code?","opts":["Browser","Text Editor","Router","Spreadsheet"],"ans":"Text Editor"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Which of the following is NOT a text editor?","opts":["Notepad++","Sublime Text","Visual Studio Code","Google Chrome"],"ans":"Google Chrome"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Which software is used to view and test HTML files?","opts":["Word","Web Browser","Excel","Power BI"],"ans":"Web Browser"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"HTML files should be saved with which extension?","opts":[".txt",".html",".css",".js"],"ans":".html"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"The root element of an HTML page is:","opts":["<head>","<body>","<html>","<title>"],"ans":"<html>"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Which section contains meta-information like the page title?","opts":["<body>","<head>","<h1>","<div>"],"ans":"<head>"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Content seen in the browser is placed inside the:","opts":["<head> tag","<body> tag","<html> tag","<style> tag"],"ans":"<body> tag"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Which tag defines a large heading?","opts":["<p>","<h1>","<a>","<li>"],"ans":"<h1>"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Which tag is used to create a paragraph?","opts":["<br>","<p>","<hr>","<span>"],"ans":"<p>"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Headings in HTML range from <h1> to:","opts":["<h3>","<h6>","<h10>","<h9>"],"ans":"<h6>"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Which tag displays a horizontal line?","opts":["<br>","<hr>","<line>","<li>"],"ans":"<hr>"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"The tag used for a single line break is:","opts":["<hr>","<br>","<p>","<div>"],"ans":"<br>"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Which tag creates a hyperlink?","opts":["<link>","<a>","<href>","<nav>"],"ans":"<a>"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"An unordered (bulleted) list is created using:","opts":["<ol>","<ul>","<li>","<list>"],"ans":"<ul>"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Numbered lists are created using:","opts":["<ul>","<ol>","<li>","<nl>"],"ans":"<ol>"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Which tag defines a list item?","opts":["<ul>","<ol>","<li>","<list>"],"ans":"<li>"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"HTML comments begin with:","opts":["//","/*","<!--","#"],"ans":"<!--"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Which CSS property changes the text color?","opts":["font-size","color","background-color","layout"],"ans":"color"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"JavaScript was created by Brendan Eich in:","opts":["1989","1995","2000","2017"],"ans":"1995"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"What was JavaScript's initial name?","opts":["Java","Mocha","Hotmail","WebScript"],"ans":"Mocha"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"In CSS, which part specifies the element to style?","opts":["Declaration","Selector","Property","Value"],"ans":"Selector"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"CSS syntax follows the format:","opts":["selector [property=value]","selector { property: value; }","[selector] property: value","{selector: property}"],"ans":"selector { property: value; }"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"JavaScript variables are like:","opts":["Containers for information","Physical wires","Fixed numbers","Static images"],"ans":"Containers for information"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Which attribute is used for inline CSS styling?","opts":["class","style","link","script"],"ans":"style"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"The CSS box model describes the layout including margins, borders, and:","opts":["Padding","Colors","Fonts","Scripts"],"ans":"Padding"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Which tag is used to group block-level content?","opts":["<span>","<div>","<a>","<p>"],"ans":"<div>"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"What is the purpose of the <table> tag?","opts":["To make a list","To organize data in rows and columns","To insert an image","To create a link"],"ans":"To organize data in rows and columns"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"JavaScript allows features such as:","opts":["Animations","Forms","Responsive features","All of the above"],"ans":"All of the above"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"To see updated HTML content after changes, you must:","opts":["Restart the computer","Refresh the browser","Buy new hardware","Delete the file"],"ans":"Refresh the browser"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch5: Computational Thinking","q":"Full-stack developers are in:","opts":["Low demand","High demand","No demand","Schools only"],"ans":"High demand"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Raw facts gathered about things around us are:","opts":["Information","Data","Science","Results"],"ans":"Data"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Data describing qualities or characteristics (non-numeric) is:","opts":["Quantitative","Qualitative","Structured","Big Data"],"ans":"Qualitative"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Quantitative data consists of:","opts":["Labels","Numbers used to measure quantities","Opinions","Feelings"],"ans":"Numbers used to measure quantities"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"\"Favourite ice cream flavor\" is an example of:","opts":["Quantitative data","Qualitative data","Binary data","Integer data"],"ans":"Qualitative data"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"\"Test scores out of 100\" is an example of:","opts":["Qualitative data","Quantitative data","Unstructured data","Text data"],"ans":"Quantitative data"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Data organized and formatted for easy searching (like spreadsheets) is:","opts":["Structured Data","Unstructured Data","Metadata","Raw Data"],"ans":"Structured Data"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Emails, social media posts, and videos are examples of:","opts":["Structured Data","Unstructured Data","Tables","Databases"],"ans":"Unstructured Data"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"The process of gathering information to answer questions is:","opts":["Data Science","Data Collection","Visualization","Storage"],"ans":"Data Collection"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Collecting information by asking questions (paper, phone, or online) is a:","opts":["Survey","Interview","Observation","Backup"],"ans":"Survey"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Watching and noting what happens in a particular situation is an:","opts":["Interview","Observation","Survey","Questionnaire"],"ans":"Observation"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Talking to individuals one-on-one for detailed info is an:","opts":["Survey","Interview","Observation","Spreadsheet"],"ans":"Interview"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"The process of turning numbers into pictures (charts, graphs) is:","opts":["Pre-processing","Data Visualization","Analysis","Gathering"],"ans":"Data Visualization"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Which tool is specifically designed for detailed, interactive visualizations?","opts":["Excel","Tableau","Word","Notepad"],"ans":"Tableau"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Microsoft Power BI is used for:","opts":["Writing code","Data Visualization","Browsing","Deleting files"],"ans":"Data Visualization"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"The first and most important step in working with data is:","opts":["Visualization","Data Pre-processing","Analysis","Storage"],"ans":"Data Pre-processing"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Pre-processing involves cleaning and:","opts":["Deleting","Organizing","Printing","Selling"],"ans":"Organizing"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Examining data to discover useful info and support decisions is:","opts":["Collection","Data Analysis","Gathering","Coding"],"ans":"Data Analysis"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Which type of analysis deals with non-numeric data like text and images?","opts":["Quantitative","Qualitative","Arithmetical","Statistical"],"ans":"Qualitative"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Solving problems using data like a \"detective\" is:","opts":["Data Science","Hardware repair","Web development","Networking"],"ans":"Data Science"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"A branch of data science focused on better understanding data is:","opts":["Data Analytics","Programming","Decomposition","Abstraction"],"ans":"Data Analytics"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Which programming language is popular for data models and has the \"Pandas\" library?","opts":["HTML","Python","CSS","SQL"],"ans":"Python"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Which language is specifically designed for statistical analysis and \"R\" in its name?","opts":["Python","R","SQL","JavaScript"],"ans":"R"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"SQL is used to manage and query:","opts":["Images","Databases","Colors","Networks"],"ans":"Databases"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"A copy of important data stored separately to protect against loss is a:","opts":["Survey","Backup","Visualization","Node"],"ans":"Backup"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"The ability to connect to a computer from a distant location is:","opts":["Decomposition","Remote access","Routing","Fetching"],"ans":"Remote access"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Which tool is a free online survey tool from Google?","opts":["Excel","Google Forms","Power BI","SQL"],"ans":"Google Forms"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"What help identify patterns, trends, and outliers in datasets?","opts":["Charts","Keyboards","Sensors","Cables"],"ans":"Charts"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Discrete data like \"number of students\" can be:","opts":["Continuous","Counted","Measured by ruler","Visualized by sound"],"ans":"Counted"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Quantitative data can be measured using instruments like a:","opts":["Thermometer","Dictionary","Camera","Speaker"],"ans":"Thermometer"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Which chart is used to show relationships between data points?","opts":["Pie","Graph","Logic gate","Flowchart"],"ans":"Graph"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Organizing data in tables helps present information:","opts":["Messily","Clearly","Randomly","In binary"],"ans":"Clearly"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"A \"messy list\" of scores might lead to:","opts":["Speed","Recording errors","More RAM","Better grades"],"ans":"Recording errors"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Checking for missing or incorrect data is part of evaluating:","opts":["Data Quality","Network speed","CPU type","Screen brightness"],"ans":"Data Quality"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Collaborative tools like Google Docs enhance:","opts":["Alone time","Productivity","Hardware speed","Data loss"],"ans":"Productivity"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"The \"detective\" analogy applies to which field?","opts":["Web dev","Data Science","Troubleshooting","Robotics"],"ans":"Data Science"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Which step comes FIRST in the data science process?","opts":["Analysis","Understanding the problem","Visualization","Storage"],"ans":"Understanding the problem"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Pandas and Matplotlib are libraries for:","opts":["JavaScript","Python","HTML","CSS"],"ans":"Python"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"SQL stands for:","opts":["Simple Query Language","Structured Query Language","Standard Queue logic","System Quest Link"],"ans":"Structured Query Language"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Scatter plots and histograms are types of:","opts":["Tables","Graphs","Protocols","Hardware"],"ans":"Graphs"},{"classLevel":"9","subject":"Computer Science","chapter":"Ch6: Data Science and Information","q":"Data Visualization makes complex information:","opts":["Harder","Easier to understand","Binary","Invisible"],"ans":"Easier to understand"}];
+
+// ══════════════════════════════════════════
+// LOCAL STORAGE HELPERS
+// ══════════════════════════════════════════
+const STORAGE_KEY = 'testcraft_v1';
+
+function loadAllData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch(e) { return {}; }
+}
+
+function saveAllData(data) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    flashSaveBadge();
+  } catch(e) { console.warn('Storage save failed', e); }
+}
+
+function loadUserData(username) {
+  const all = loadAllData();
+  return all[username] || { quizzes: 0, xp: 0, best: null, recent: [] };
+}
+
+function saveUserData(username, userData) {
+  const all = loadAllData();
+  all[username] = userData;
+  saveAllData(all);
+}
+
+function flashSaveBadge() {
+  const badge = document.getElementById('save-badge');
+  badge.classList.add('show');
+  setTimeout(() => badge.classList.remove('show'), 1800);
+}
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let currentUser = null;
+let userData    = null;   // persisted per-user data
+let quizQuestions = [];
+let currentQIndex = 0;
+let selectedAnswer = null;
+let answers = [];
+let timerInterval = null;
+let timeLeft = 30;
+let quizCount = 10;
+
+// ══════════════════════════════════════════
+// SCREENS
+// ══════════════════════════════════════════
+function showScreen(id) {
+  ['screen-login','screen-home','screen-quiz','screen-results'].forEach(s => {
+    const el = document.getElementById(s);
+    el.classList.add('hidden');
+    el.style.display = 'none';
+  });
+  const target = document.getElementById(id);
+  target.classList.remove('hidden');
+  target.style.display = 'flex';
+  target.classList.add('fade-in');
+  setTimeout(() => target.classList.remove('fade-in'), 400);
+}
+
+// ══════════════════════════════════════════
+// LOGIN
+// ══════════════════════════════════════════
+function doLogin() {
+  const u = document.getElementById('inp-user').value.trim().toLowerCase();
+  const p = document.getElementById('inp-pass').value;
+  const errEl = document.getElementById('login-error');
+  const user = USERS.find(x => x.username.toLowerCase() === u && x.password === p);
+  if (!user) {
+    errEl.textContent = 'Invalid username or password.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+  errEl.classList.add('hidden');
+  currentUser = user;
+  // Load persisted data for this user
+  userData = loadUserData(user.username);
+  initHome();
+  showScreen('screen-home');
+}
+
+document.getElementById('inp-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+document.getElementById('inp-user').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('inp-pass').focus(); });
+
+function doLogout() {
+  currentUser = null;
+  userData = null;
+  document.getElementById('inp-user').value = '';
+  document.getElementById('inp-pass').value = '';
+  showScreen('screen-login');
+}
+
+// ══════════════════════════════════════════
+// HOME
+// ══════════════════════════════════════════
+function initHome() {
+  const classLabel = currentUser.classLevel==='13'?'1st Year':currentUser.classLevel==='14'?'2nd Year':`Class ${currentUser.classLevel}`;
+  document.getElementById('home-name').textContent = currentUser.name.split(' ')[0];
+  document.getElementById('home-class').textContent = classLabel;
+  const badgeEl = document.getElementById('quiz-class-badge');
+  if (badgeEl) badgeEl.textContent = classLabel + ' only';
+  updateHomeStats();
+  renderRecentList();
+
+  // Only show subjects available for this student's class
+  const myClass = currentUser.classLevel;
+  const classQs = QUESTIONS.filter(q => q.classLevel === myClass);
+  const subjects = [...new Set(classQs.map(q => q.subject))];
+  const selSubject = document.getElementById('sel-subject');
+  if (subjects.length === 0) {
+    selSubject.innerHTML = '<option value="">No subjects for your class</option>';
+  } else {
+    selSubject.innerHTML = subjects.map(s => `<option>${s}</option>`).join('');
+  }
+  loadChapters();
+
+  const counts = [5,10,15,20];
+  quizCount = 10;
+  document.getElementById('count-btns').innerHTML = counts.map(n =>
+    `<button onclick="setCount(${n},this)" style="flex:1;padding:12px 0;border-radius:12px;font-weight:900;font-size:16px;font-family:Nunito,sans-serif;cursor:pointer;transition:all .2s;background:${n===10?'var(--orange)':'var(--surface2)'};color:${n===10?'#fff':'var(--ink2)'};border:${n===10?'none':'1px solid var(--border)'};box-shadow:${n===10?'0 0 20px rgba(255,107,43,.4)':'none'}">${n}</button>`
+  ).join('');
+}
+
+function updateHomeStats() {
+  document.getElementById('home-quizzes').textContent = userData.quizzes;
+  document.getElementById('home-xp').textContent = userData.xp;
+  document.getElementById('home-score').textContent = userData.best !== null ? userData.best + '%' : '—';
+}
+
+function renderRecentList() {
+  const block = document.getElementById('recent-block');
+  const list  = document.getElementById('recent-list');
+  if (!userData.recent || userData.recent.length === 0) {
+    block.classList.add('hidden');
+    return;
+  }
+  block.classList.remove('hidden');
+  list.innerHTML = '';
+  // Show last 10, most recent first
+  [...userData.recent].reverse().slice(0, 10).forEach(r => {
+    const color = r.score>=80?'var(--green)':r.score>=50?'var(--gold)':'var(--red)';
+    const bg    = r.score>=80?'rgba(0,230,118,.12)':r.score>=50?'rgba(255,215,0,.12)':'rgba(255,71,87,.12)';
+    const item  = document.createElement('div');
+    item.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)';
+    item.innerHTML = `<div><div style="font-weight:700;font-size:14px">${r.chapter}</div><div style="font-size:12px;color:var(--ink2);margin-top:2px">${r.total} Qs · +${r.xp} XP · <span style="color:var(--ink3)">${r.date}</span></div></div><div style="padding:6px 14px;border-radius:10px;font-weight:900;font-size:15px;background:${bg};color:${color}">${r.score}%</div>`;
+    list.appendChild(item);
+  });
+}
+
+function setCount(n, btn) {
+  quizCount = n;
+  document.querySelectorAll('#count-btns button').forEach(b => {
+    b.style.background = 'var(--surface2)';
+    b.style.color = 'var(--ink2)';
+    b.style.border = '1px solid var(--border)';
+    b.style.boxShadow = 'none';
+  });
+  btn.style.background = 'var(--orange)';
+  btn.style.color = '#fff';
+  btn.style.border = 'none';
+  btn.style.boxShadow = '0 0 20px rgba(255,107,43,.4)';
+}
+
+function loadChapters() {
+  const subject = document.getElementById('sel-subject').value;
+  const myClass = currentUser ? currentUser.classLevel : null;
+  const chapters = [...new Set(QUESTIONS.filter(q => q.subject===subject && q.classLevel===myClass).map(q => q.chapter))];
+  const sel = document.getElementById('sel-chapter');
+  sel.innerHTML = '<option value="">Select chapter...</option>' + chapters.map(c => `<option>${c}</option>`).join('');
+}
+
+function startQuiz() {
+  const subject = document.getElementById('sel-subject').value;
+  const chapter = document.getElementById('sel-chapter').value;
+  const errEl   = document.getElementById('home-error');
+  if (!chapter) { errEl.textContent='Please select a chapter first.'; errEl.classList.remove('hidden'); return; }
+  errEl.classList.add('hidden');
+
+  const pool = QUESTIONS.filter(q => q.subject===subject && q.chapter===chapter && q.classLevel===currentUser.classLevel);
+  if (pool.length === 0) { errEl.textContent='No questions found for this chapter.'; errEl.classList.remove('hidden'); return; }
+
+  const count = Math.min(quizCount, pool.length);
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  quizQuestions = shuffled.slice(0, count);
+  currentQIndex = 0;
+  answers = [];
+
+  document.getElementById('quiz-chapter-label').textContent = chapter;
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+// ══════════════════════════════════════════
+// QUIZ
+// ══════════════════════════════════════════
+function renderQuestion() {
+  selectedAnswer = null;
+  const q = quizQuestions[currentQIndex];
+  const total = quizQuestions.length;
+
+  document.getElementById('quiz-progress').style.width = `${(currentQIndex/total)*100}%`;
+  document.getElementById('quiz-qnum').textContent = `Q${currentQIndex+1}`;
+  document.getElementById('quiz-total').textContent = total;
+  document.getElementById('quiz-question').textContent = q.q;
+  document.getElementById('btn-next').classList.add('hidden');
+  document.getElementById('btn-skip').classList.remove('hidden');
+
+  const optsEl = document.getElementById('quiz-options');
+  optsEl.innerHTML = q.opts.map((opt, i) =>
+    `<button class="opt-btn" onclick="selectAnswer('${opt.replace(/'/g,"\\'")}',this)">
+      <span class="opt-letter">${String.fromCharCode(65+i)}</span>
+      <span style="flex:1">${opt}</span>
+    </button>`
+  ).join('');
+
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timeLeft = 30;
+  updateTimerUI();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerUI();
+    if (timeLeft <= 0) { clearInterval(timerInterval); autoSkip(); }
+  }, 1000);
+}
+
+function updateTimerUI() {
+  const circ = 138.2;
+  const offset = circ * (1 - timeLeft/30);
+  const color = timeLeft>15?'var(--cyan)':timeLeft>7?'var(--gold)':'var(--red)';
+  document.getElementById('timer-ring').style.strokeDashoffset = offset;
+  document.getElementById('timer-ring').style.stroke = color;
+  document.getElementById('timer-text').textContent = timeLeft;
+  document.getElementById('timer-text').style.color = color;
+}
+
+function autoSkip() {
+  answers.push({ q: quizQuestions[currentQIndex], chosen: null });
+  moveNext();
+}
+
+function selectAnswer(opt, btn) {
+  if (selectedAnswer !== null) return;
+  clearInterval(timerInterval);
+  selectedAnswer = opt;
+  document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('btn-next').classList.remove('hidden');
+  document.getElementById('btn-skip').classList.add('hidden');
+}
+
+function skipQuestion() {
+  clearInterval(timerInterval);
+  answers.push({ q: quizQuestions[currentQIndex], chosen: null });
+  moveNext();
+}
+
+function nextQuestion() {
+  answers.push({ q: quizQuestions[currentQIndex], chosen: selectedAnswer });
+  moveNext();
+}
+
+function moveNext() {
+  currentQIndex++;
+  if (currentQIndex < quizQuestions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+// ══════════════════════════════════════════
+// RESULTS
+// ══════════════════════════════════════════
+function showResults() {
+  clearInterval(timerInterval);
+  const total   = answers.length;
+  const correct = answers.filter(a => a.chosen && a.chosen===a.q.ans).length;
+  const skipped = answers.filter(a => !a.chosen).length;
+  const wrong   = total - correct - skipped;
+  const score   = Math.round((correct/total)*100);
+  const xp      = correct * 10 + (score===100?50:0);
+
+  // ── Persist results to localStorage ──
+  userData.quizzes++;
+  userData.xp += xp;
+  if (userData.best === null || score > userData.best) userData.best = score;
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short' });
+  if (!userData.recent) userData.recent = [];
+  userData.recent.push({
+    chapter: quizQuestions[0]?.chapter || '',
+    total,
+    score,
+    xp,
+    correct,
+    wrong,
+    skipped,
+    date: dateStr
+  });
+  // Keep only last 50 entries
+  if (userData.recent.length > 50) userData.recent = userData.recent.slice(-50);
+  saveUserData(currentUser.username, userData);
+
+  // ── Render ──
+  const color = score>=80?'var(--green)':score>=50?'var(--gold)':'var(--red)';
+  const label = score>=80?'Excellent':score>=50?'Good Job':'Keep Going';
+
+  document.getElementById('res-score-pct').textContent = score+'%';
+  document.getElementById('res-score-pct').style.color = color;
+  document.getElementById('res-score-label').textContent = label;
+  document.getElementById('res-chapter').textContent = quizQuestions[0]?.chapter || '';
+  document.getElementById('res-correct').textContent = correct;
+  document.getElementById('res-wrong').textContent   = wrong;
+  document.getElementById('res-skipped').textContent = skipped;
+  document.getElementById('res-xp').textContent      = '+'+xp;
+
+  const circ   = 339.3;
+  const offset = circ * (1 - score/100);
+  const ring   = document.getElementById('score-ring');
+  ring.style.stroke          = color;
+  ring.style.filter          = `drop-shadow(0 0 8px ${color})`;
+  ring.style.strokeDashoffset = circ;
+  setTimeout(() => { ring.style.strokeDashoffset = offset; }, 100);
+
+  const reviewEl = document.getElementById('res-review');
+  reviewEl.innerHTML = answers.map((a, i) => {
+    const isCorrect = a.chosen && a.chosen===a.q.ans;
+    const isSkipped = !a.chosen;
+    const c  = isCorrect?'var(--green)':isSkipped?'var(--gold)':'var(--red)';
+    const bg = isCorrect?'rgba(0,230,118,.07)':isSkipped?'rgba(255,215,0,.07)':'rgba(255,71,87,.07)';
+    const bd = isCorrect?'rgba(0,230,118,.2)':isSkipped?'rgba(255,215,0,.2)':'rgba(255,71,87,.2)';
+    const detail = isCorrect
+      ? `<span style="color:var(--green)">✓ ${a.q.ans}</span>`
+      : isSkipped
+      ? `<span style="color:var(--gold)">Skipped · Correct: ${a.q.ans}</span>`
+      : `<div style="color:var(--red)">✗ Your answer: ${a.chosen}</div><div style="color:var(--green);margin-top:3px">✓ Correct: ${a.q.ans}</div>`;
+    return `<div style="background:${bg};border:1px solid ${bd};border-radius:14px;padding:12px 14px">
+      <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:8px;line-height:1.4"><span style="color:var(--ink2);font-weight:800">Q${i+1}.</span> ${a.q.q}</div>
+      <div style="font-size:12px;font-weight:700">${detail}</div>
+    </div>`;
+  }).join('');
+
+  showScreen('screen-results');
+}
+
+function goHome() {
+  updateHomeStats();
+  renderRecentList();
+  showScreen('screen-home');
+}
+
+// ══════════════════════════════════════════
+// RESET DATA
+// ══════════════════════════════════════════
+function confirmResetData() {
+  if (confirm(`Clear all saved data for ${currentUser.name}? This cannot be undone.`)) {
+    userData = { quizzes: 0, xp: 0, best: null, recent: [] };
+    saveUserData(currentUser.username, userData);
+    updateHomeStats();
+    renderRecentList();
+  }
+}
+
+// Init
+showScreen('screen-login');
+</script>
+</body>
+</html>
